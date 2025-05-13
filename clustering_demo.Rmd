@@ -1,0 +1,92 @@
+---
+title: "Clustering demo"
+author: "Wing-Ho Ko"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+```
+
+Pre-process the penguin dataset
+
+```{r}
+penguins_dropped <- penguins |> drop_na(bill_length_mm:body_mass_g)
+penguins_num <- penguins_dropped |> select(bill_length_mm:body_mass_g) 
+```
+
+Check with principal component analysis to decide how many clusters we'd try:
+
+```{r}
+penguins_pca <- prcomp(penguins_num, scale.=TRUE)
+```
+
+
+```{r}
+ggplot(penguins_pca$x) + geom_point(aes(x=PC1, y=PC2))
+```
+
+```{r}
+ggplot(penguins_pca$x) + geom_point(aes(x=PC3, y=PC4))
+```
+
+Attempt k-means clustering with 2 clusters
+
+```{r}
+penguins_km2 <- kmeans(penguins_num, 2)
+print(penguins_km2)
+```
+
+Construst dataframe with the cluster label included
+
+```{r}
+penguins_trans2 <- as.data.frame(penguins_pca$x) |>
+  mutate(label=as.factor(penguins_km2$cluster))
+```
+
+Visualize the results of clustering:
+
+```{r}
+ggplot(penguins_trans2) + 
+  geom_point(aes(x=PC1, y=PC2, color=label, shape=label))
+```
+
+```{r}
+ggplot(penguins_trans2) + 
+  geom_point(aes(x=PC3, y=PC4, color=label, shape=label))
+```
+
+Retry with 3 clusters (hopefully corresponding to the 3 species)
+
+```{r}
+penguins_km3 <- kmeans(penguins_num, 3)
+print(penguins_km3)
+```
+
+```{r}
+penguins_trans3 <- as.data.frame(penguins_pca$x) |>
+  mutate(
+    label=as.factor(penguins_km3$cluster),
+    species=as.factor(penguins_dropped$species)
+  )
+```
+
+Visualize the results of clustering:
+
+```{r}
+ggplot(penguins_trans3) + 
+  geom_point(aes(x=PC1, y=PC2, color=label, shape=label))
+```
+
+Compare with true labels (species):
+
+```{r}
+ggplot(penguins_trans3) +
+  geom_point(aes(x=PC1, y=PC2, color=species, shape=species))
+```
+

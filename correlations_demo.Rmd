@@ -1,0 +1,60 @@
+---
+title: "correlation"
+author: "Wing-Ho Ko"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+### Covariance and correlation
+
+#### Example: noisy quintic curve
+
+Loading the prepared dataset (quintic curve with noise)
+
+```{r}
+quintic <- read_csv("data/quintic_data.csv")
+```
+
+Plot the location of the data points
+
+```{r}
+ggplot(quintic) + geom_point(aes(x=x, y=y)) + coord_fixed()
+```
+
+Covariance between x and y
+
+```{r}
+cov(quintic$x, quintic$y)
+```
+
+Pearson correlation between x and y
+
+```{r}
+cor(quintic$x, quintic$y)
+```
+
+Spearman's correlation between x and y
+
+```{r}
+cor(quintic$x, quintic$y, method="spearman")
+```
+
+Full covariance matrix
+
+```{r}
+cov(quintic)
+```
+
+Full correlation matrix
+
+```{r}
+cor(quintic)
+```
+

@@ -1,0 +1,80 @@
+---
+title: "week 5 exercises"
+author: "Wing-Ho Ko"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(ggbiplot)
+library(umap)
+library(palmerpenguins)
+```
+
+### Exercise 1: covariance and correlation in penguins dataset
+
+Consider the 4 numeric variables in the penguins dataset: bill length, bill depth, flipper length, and body mass. 
+
+```{r}
+penguins_sub <- penguins |> select(bill_length_mm:body_mass_g) |> drop_na()
+```
+
+1. Compute the covariance matrix between these variables, after dropping the observations with missing measurements
+
+2. Which pair of variables have the most positive covariance? Most negative?
+
+3. Repeat (1) but with correlation matrix.
+
+4. Repeat (2) but with correlations.
+
+### Exercise 2: principal component analysis on limestone
+
+Consider the Nashville carbonates geochemistry dataset, a set of geochemical measurements on Upper Ordovician limestone beds from central Tennessee
+
+```{r}
+carbonates <- read_csv("../data/nashville_carbonates.csv")
+```
+
+Inspect the columns:
+
+```{r}
+carbonates
+```
+
+We’ll treat the first 2 columns (`strata` and `stratPosition`) as metadata and use the remaining columns as variables. The first two of these (`d13C` and `d18O`) are isotope ratios while the rest are log10 of the weight percentages of major oxides
+
+1. Perform principal component analysis on the dataset, and store the result in `carb_pca`. Make sure you mean-subtracted and rescaled
+
+2. Which variable has the strongest association with the first principal component? How about weakest association?
+
+3. Make a cumulative scree plot (see the `type` argument of `ggscreeplot`). If we want to keep enough principal components so that 90% of the correlation is explained, how many principal components do we need?
+
+4. It turns out that there is a major geological boundary at stratPosition = 34.2. Samples below (smaller stratPosition) this belong to the Carters Formation and samples above (larger stratPosition) are in the Hermitage Formation. 
+
+5. Based on the plot, Which principal component is useful in distinguishing between rocks from different formations?
+
+### Exercise 3: UMAP on limestone
+
+Consider again the Nashville carbonates geochemistry dataset. Treat the same columns (`d13C` to `log_Si`) as variables and Perform UMAP on the data as follows:
+
+1. Perform UMAP using the default setting. Visualize the result.
+
+2. Try again with `n_neighbors` = 3 and contrast it with the default behavior (`n_neighbors` = 15)
+
+3. Try again with `n_components` = 3 followed by a pca (with `scale.`=FALSE) to extract a 2 dimensional representation. Again contrast it with the default (`n_components` = 2)
+
+### Exercise 4: classifying seeds of wheat
+
+The `seeds_unlabeled.csv` file contains measurements of geometrical properties of kernels belonging to three different varieties of wheat. (Charytanowicz, et. al., DOI:10.1007/978-3-642-13105-9_2). 
+
+1. Perform k-means clustering on the seeds dataset assuming there are 3 groups
+
+2. To visualize the results, perform PCA (with rescaling) on the 7 variables. Then, make a scatter plot with PC1 and PC2 as axes, and color and shape the data point according to the clustering result
+
+3. The actual variety of wheat can be found in the file `seeds_labels.csv`. Make an analogous plot as above where color and shape is determined by the actual wheat type.
+
+4. Find the proportion of seeds that k-means clustering misclassified

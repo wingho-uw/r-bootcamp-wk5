@@ -1,0 +1,103 @@
+---
+title: "UMAP demo"
+author: "Wing-Ho Ko"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(ggbiplot)
+library(umap)
+```
+
+### Example 1: Swiss banknotes dataset
+
+```{r}
+banknotes <- read_csv("data/banknotes.csv")
+```
+
+```{r}
+banknotes
+```
+
+```{r}
+bnotes_umap <- umap(
+  select(banknotes, Length:Top),
+  n_neighbors=15,
+  n_components=2,
+  min_dist=0.1,
+  metric="euclidean"
+)
+```
+
+Obtain the transformed data points:
+
+```{r}
+as.data.frame(bnotes_umap$layout)
+```
+
+Put the transformed data points together with currency label into as dataframe
+
+```{r}
+bnotes_trans <- as.data.frame(bnotes_umap$layout) |>
+  mutate(currency = as.factor(banknotes$Currency))
+```
+
+Plot the transformed points
+
+```{r}
+ggplot(bnotes_trans, aes(x=V1, y=V2, shape=currency, color=currency)) + 
+  geom_point()
+```
+
+### Example 2: Trefoil data
+
+Load the simulated trefoil-shaped data
+
+```{r}
+trefoil_knot <- read_csv("data/trefoil_knot.csv")
+```
+
+Inspect the loaded data
+
+```{r}
+trefoil_knot
+```
+
+Plot the "top view" (x versus y):
+
+```{r}
+ggplot(trefoil_knot, aes(x=x, y=y, color=t)) + geom_point() + 
+  coord_fixed() + scale_color_viridis_c(option="turbo")
+```
+With the `rgl` package we can make an interactive 3d plot of the data 
+
+```{r}
+library(rgl)
+plot3d(trefoil_knot)
+```
+
+Attempt at lower-dimensional representation using PCA:
+
+```{r}
+knot_pca <- prcomp(~ x + y + z, trefoil_knot, scale.=FALSE)
+ggbiplot(knot_pca, 1:2, scale=0, group=trefoil_knot$t) + 
+  scale_color_viridis_c(option="turbo")
+```
+
+Try using umap instead:
+
+```{r}
+knot_umap <- umap(select(trefoil_knot, x:z), n_neighbors=30)
+knot_trans <- as.data.frame(knot_umap$layout) |> mutate(t = trefoil_knot$t)
+```
+
+```{r}
+ggplot(knot_trans, aes(x=V1, y=V2, color=t)) + geom_point() + 
+  scale_color_viridis_c(option="turbo")
+```
+

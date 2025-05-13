@@ -1,0 +1,101 @@
+---
+title: "Principal Component Analysis demo"
+author: "Wing-Ho Ko"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(ggbiplot)
+```
+
+Load the Swiss banknotes dataset
+
+```{r}
+banknotes <- read_csv("data/banknotes.csv")
+```
+
+```{r}
+banknotes
+```
+
+
+Perform principal component analysis via `prcomp()`
+
+```{r}
+bnotes_pca <- prcomp(
+  ~ Length + Left + Right + Bottom + Top, banknotes,
+  scale.=TRUE
+)
+```
+
+Summary information about the PCA
+
+```{r}
+print(bnotes_pca)
+```
+
+Extract the mean that is being subtracted:
+
+```{r}
+bnotes_pca$center
+```
+
+Extract the scale factor used (= standard deviation of each variable):
+
+```{r}
+bnotes_pca$scale
+```
+
+Extract the standard deviation associated with each principal component
+
+```{r}
+bnotes_pca$sdev
+```
+
+Note that `sum(($sdev)^2) = 5` in our case
+
+```{r}
+sum(bnotes_pca$sdev^2)
+```
+
+Extract the coordinate transformation matrix programmatically
+
+```{r}
+bnotes_pca$rotation
+```
+
+Extract the transformed coordinates programmatically
+
+```{r}
+as.data.frame(bnotes_pca$x)
+```
+
+Scree plot:
+
+```{r}
+ggscreeplot(bnotes_pca)
+```
+
+Form (unscaled data points and variable vectors) biplot:
+
+```{r}
+ggbiplot(bnotes_pca, scale=0, groups=as.factor(banknotes$Currency))
+```
+
+Covariance (scaled data points and variable vectors) biplot:
+
+```{r}
+ggbiplot(bnotes_pca, scale=1, groups=as.factor(banknotes$Currency))
+```
+
+Biplot of the 3rd and 4th principal components:
+
+```{r}
+ggbiplot(bnotes_pca, scale=0, choices=c(3, 4), groups=as.factor(banknotes$Currency))
+```
+
