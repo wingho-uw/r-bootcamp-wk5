@@ -36,7 +36,7 @@ penguins_sub <- penguins |> select(bill_length_mm:body_mass_g) |> drop_na()
 Consider the Nashville carbonates geochemistry dataset, a set of geochemical measurements on Upper Ordovician limestone beds from central Tennessee
 
 ```{r}
-carbonates <- read_csv("../data/nashville_carbonates.csv")
+carbonates <- read_csv("data/nashville_carbonates.csv")
 ```
 
 Inspect the columns:
@@ -54,6 +54,8 @@ We’ll treat the first 2 columns (`strata` and `stratPosition`) as metadata and
 3. Make a cumulative scree plot (see the `type` argument of `ggscreeplot`). If we want to keep enough principal components so that 90% of the correlation is explained, how many principal components do we need?
 
 4. It turns out that there is a major geological boundary at stratPosition = 34.2. Samples below (smaller stratPosition) this belong to the Carters Formation and samples above (larger stratPosition) are in the Hermitage Formation. 
+
+Make a biplot to visualize the results
 
 5. Based on the plot, Which principal component is useful in distinguishing between rocks from different formations?
 

@@ -22,6 +22,11 @@ Loading the prepared dataset (quintic curve with noise)
 quintic <- read_csv("data/quintic_data.csv")
 ```
 
+```{r}
+quintic
+```
+
+
 Plot the location of the data points
 
 ```{r}

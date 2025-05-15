@@ -42,7 +42,7 @@ penguins_km2 <- kmeans(penguins_num, 2)
 print(penguins_km2)
 ```
 
-Construst dataframe with the cluster label included
+Construct dataframe with the cluster label included
 
 ```{r}
 penguins_trans2 <- as.data.frame(penguins_pca$x) |>
