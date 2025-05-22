@@ -99,3 +99,9 @@ Biplot of the 3rd and 4th principal components:
 ggbiplot(bnotes_pca, scale=0, choices=c(3, 4), groups=as.factor(banknotes$Currency))
 ```
 
+Note: in addition to the formula interface, prcomp() also has a matrix interface:
+
+```{r}
+prcomp(select(banknotes, Length:Top), scale.=TRUE)
+```
+
